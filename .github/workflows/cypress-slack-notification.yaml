@@ -1,50 +1,50 @@
-# name: Cypress Test Notification
+name: Cypress Test Notification
 
-# on:
-#   workflow_run:
-#     workflows:
-#       - Pull Request
-#     types:
-#       - completed
+on:
+  workflow_run:
+    workflows:
+      - Pull Request
+    types:
+      - completed
 
-# # Add these permissions
-# permissions:
-#   actions: read
-#   contents: read
+# Add these permissions
+permissions:
+  actions: read
+  contents: read
 
-# jobs:
-#   notify-slack:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Send Cypress Test Results to Slack
-#         uses: slackapi/slack-github-action@v1.23.0
-#         with:
-#           payload: |
-#             {
-#               "blocks": [
-#                 {
-#                   "type": "header",
-#                   "text": {
-#                     "type": "plain_text",
-#                     "text": "Cypress Test Results: ${{ github.event.repository.name }}"
-#                   }
-#                 },
-#                 {
-#                   "type": "section",
-#                   "text": {
-#                     "type": "mrkdwn",
-#                     "text": "*Status:* ${{ github.event.workflow_run.conclusion == 'success' && '✅ Success' || '❌ Failure' }}"
-#                   }
-#                 },
-#                 {
-#                   "type": "section",
-#                   "text": {
-#                     "type": "mrkdwn",
-#                     "text": "*Details:* <${{ github.event.workflow_run.html_url }}|View on GitHub Actions>"
-#                   }
-#                 }
-#               ]
-#             }
-#         env:
-#           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-#           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+jobs:
+  notify-slack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Cypress Test Results to Slack
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Cypress Test Results: ${{ github.event.repository.name }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Status:* ${{ github.event.workflow_run.conclusion == 'success' && '✅ Success' || '❌ Failure' }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Details:* <${{ github.event.workflow_run.html_url }}|View on GitHub Actions>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

@@ -1,8 +1,7 @@
+# .github/workflows/pull-request.yaml
 name: Pull Request
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -18,7 +17,45 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm ci  # This ensures cypress is available for config.js
+        run: npm ci
 
-      - name: Run Cypress Tests
+      - name: Run Cypress tests
         run: npx cypress run
+
+  notify:
+    needs: test
+    if: always()  # run even if test fails
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack notification
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Cypress Test Results: ${{ github.repository }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Status:* ${{ needs.test.result == 'success' && '✅ Passed' || '❌ Failed' }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Details:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View on GitHub Actions>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
