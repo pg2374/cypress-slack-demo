@@ -1,0 +1,29 @@
+name: Reusable PR Workflow
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        required: false
+        default: '18'
+        type: string
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: false  # not used here, just example
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs['node-version'] }}
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Run Cypress
+        run: npx cypress run
