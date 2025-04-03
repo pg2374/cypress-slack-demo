@@ -36,5 +36,5 @@ jobs:
         run: npx cypress run
 
       - name: Debug Cypress outcome
-        run: echo "Cypress outcome was: ${{ steps.cypress.outcome }}"
-
+        run: | 
+          echo "Cypress outcome was: ${{ steps.cypress.outcome }}"
