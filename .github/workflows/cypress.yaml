@@ -10,6 +10,10 @@ on:
     secrets:
       SLACK_WEBHOOK_URL:
         required: false  # not used here, just example
+    outputs:
+      cypress-status:
+        description: "Cypress test result"
+        value: ${{ jobs.test.outputs.cypress-status }}
 
 jobs:
   test:
@@ -28,4 +32,9 @@ jobs:
         run: npm ci
 
       - name: Run Cypress
+        id: cypress
         run: npx cypress run
+
+      - name: Debug Cypress outcome
+        run: echo "Cypress outcome was: ${{ steps.cypress.outcome }}"
+
