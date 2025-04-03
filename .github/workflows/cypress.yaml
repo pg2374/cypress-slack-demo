@@ -14,6 +14,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    outputs:
+      cypress-status: ${{ steps.cypress.outcome }}
     steps:
       - uses: actions/checkout@v4
 
