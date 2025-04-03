@@ -33,8 +33,14 @@ jobs:
 
       - name: Run Cypress
         id: cypress
-        run: npx cypress run
+        continue-on-error: true
+        run: |
+          npx cypress run
 
       - name: Debug Cypress outcome
         run: | 
           echo "Cypress outcome was: ${{ steps.cypress.outcome }}"
+
+      - name: Fail if Cypress failed
+        if: steps.cypress.outcome != 'success'
+        run: exit 1
